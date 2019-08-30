@@ -15,14 +15,12 @@ public class AccountServiceImpl implements AccountService{
 	}
 	
     @Override
-    public void createAccount(int money) {
+    public void createAccount(String money) {
         AccountBean a = new AccountBean();
-        a.setMoney(String.valueOf(money));
+        a.setMoney(money);
         a.setRegDate(findDate());
         a.setAccountNum(createAccountNum());
-        while(!existAccountNum(a.getAccountNum())) {
-        a.setAccountNum(createAccountNum());
-        }
+        System.out.println(a.toString());
         accounts.add(a);
     }
     

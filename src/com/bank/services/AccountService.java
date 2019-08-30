@@ -9,7 +9,7 @@ import com.bank.domains.*;
 
 public interface AccountService {
 	
-    public void createAccount(int money);
+    public void createAccount(String money);
     public String createAccountNum();
     // 계좌번호 생성(1234-5678)
     public List<AccountBean> findAll();
