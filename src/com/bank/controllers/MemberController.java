@@ -1,13 +1,20 @@
 package com.bank.controllers;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bank.domains.CustomerBean;
+import com.bank.pool.Constants;
+import com.bank.serviceimpls.MemberServiceImpl;
+import com.bank.services.MemberService;
 
 @WebServlet("/member.do")
 public class MemberController extends HttpServlet {
@@ -20,21 +27,71 @@ public class MemberController extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("check");
-		String id = request.getParameter("id");
-		String pw = request.getParameter("pw");
-		String name = request.getParameter("name");
-		String ssn = request.getParameter("ssn");
-		String credit = request.getParameter("credit");
-		CustomerBean c = new CustomerBean();
-		c.setId(id);
-		c.setPw(pw);
-		c.setName(name);
-		c.setSsn(ssn);
-		c.setCredit(credit);
-		System.out.println("회원정보 : "+ c.toString());
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
+		System.out.println("MemberController에 도착함");
+		System.out.println(request.getParameter("action"));
+		System.out.println(request.getParameter("dest"));
+		MemberService service = new MemberServiceImpl();
+		CustomerBean param =null;
+
+
+		switch(request.getParameter("action")) {
+	
+			
+			case "move" : request.getRequestDispatcher(String.format
+					(Constants.VIEW_PATH,"customer",request.getParameter("dest"))).forward(request, response);
+					System.out.println("MemberController에 도착함1");
+			
+					break;
+			
+			case "join":
+				System.out.println("MemberController에 도착함2");
+			    String id = request.getParameter("id");
+				String pw = request.getParameter("pw");
+				String name = request.getParameter("name");
+				String ssn = request.getParameter("ssn");
+				String credit = request.getParameter("credit");
+				param = new CustomerBean();
+				param.setId(id);
+				param.setPw(pw);
+				param.setName(name);
+				param.setSsn(ssn);
+				param.setCredit(credit);
+				System.out.println("회원정보 : "+ param.toString());
+				service.join(param);
+				request.getRequestDispatcher(String.format
+						(Constants.VIEW_PATH,"customer",request.getParameter("dest"))).forward(request, response);
+					break;
+			 
+			case "login" :
+				System.out.println("MemberController에 도착함3");
+			     id = request.getParameter("id");
+				pw = request.getParameter("pw"); 
+				param = new CustomerBean();
+				param.setId(id);
+				param.setPw(pw);
+				System.out.println(param.toString());
+				CustomerBean customer = service.login(param);
+				if(param.getId().equals(customer.getId())&&param.getPw().equals(customer.getPw())) {
+					request.setAttribute("customer", customer);
+					request.getRequestDispatcher(String.format
+							(Constants.VIEW_PATH,"customer",request.getParameter("dest"))).forward(request, response);
+				}else {
+					request.getRequestDispatcher(String.format
+							(Constants.VIEW_PATH,"customer",request.getParameter("action"))).forward(request, response);
+				}
+					break;
+			 
+					
+			case "existId" : 
+				break;
+					
+			default:
+
+			
+					break;
+		}
+		
+	 }
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

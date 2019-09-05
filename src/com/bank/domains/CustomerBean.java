@@ -10,10 +10,6 @@ public class CustomerBean extends MemberBean{
     }
     @Override
     public String toString() {
-        return "회원정보 [id=" + getId()
-                + ", pw=" + getPw()
-                + ", name=" + getName()
-                + ", ssn=" + getSsn()
-                + ", credit=" + credit + "]";
+        return String.format("%s,%s,%s,%s,%s", getId(),getPw(),getName(),getSsn(),credit);
     }
 }

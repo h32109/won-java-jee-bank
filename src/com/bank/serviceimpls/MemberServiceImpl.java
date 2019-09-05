@@ -2,42 +2,51 @@ package com.bank.serviceimpls;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bank.DAOImpls.MemberDAOImpl;
+import com.bank.daos.MemberDAO;
 import com.bank.domains.CustomerBean;
 import com.bank.domains.EmployeeBean;
 import com.bank.domains.MemberBean;
 import com.bank.services.MemberService;
 
 public class MemberServiceImpl implements MemberService {
+private MemberDAO dao;
 	
-	private List<CustomerBean> customers;
-	private List<EmployeeBean> employees;
 	
 	public MemberServiceImpl() {
-		customers = new ArrayList<>();
-		employees = new ArrayList<>();
+		dao = new MemberDAOImpl();
 	}
 	
     @Override
     public void join(CustomerBean param) {
-        customers.add(param);
-        
+        dao.insertCustomer(param);
+    }
+ 
+    @Override
+    public void register(EmployeeBean param) {
     }
     
-    public void register(EmployeeBean param) {
-    	employees.add(param);
-    }
     @Override
-    public List<CustomerBean>findAllCustomers() {
-    	List<CustomerBean> cus = new ArrayList<>();
-    	cus = this.customers; 
-        return cus;
+    public CustomerBean login(MemberBean param) {
+    	CustomerBean customer = new CustomerBean();
+    	customer.setId(param.getId());
+    	customer.setPw(param.getPw());
+    	CustomerBean target = dao.login(customer);
+        return target;
     }
+}
+   /* @Override
+   public List<CustomerBean>findAllCustomers() {
+        return null;
+    }
+    
     @Override
-    public List<EmployeeBean> findAllAdmins() {
+   public List<EmployeeBean> findAllAdmins() {
     	List<EmployeeBean> emps = new ArrayList<>();
-    	emps = this.employees; 
+    /emps = this.employees; 
         return emps;
     }
+    
     @Override
     public List<MemberBean> findByName(String name) {
     	MemberBean m = new MemberBean();
@@ -90,24 +99,7 @@ public class MemberServiceImpl implements MemberService {
     	}
         return m;
     }
-    @Override
-    public boolean login(MemberBean param) {
-    	boolean flag = false;
-    	for(CustomerBean c : customers) {
-    		if(param.getId().equals(c.getId())) {
-    			flag = true;
-    			break;
-    		}
-    	}
-    	for(EmployeeBean e : employees) {
-    		if(param.getId().equals(e.getId())) {
-    			flag = true;
-    			break;
-    		}
-    	}
-    	
-        return flag;
-    }
+
     
     @Override
     public int countCustomers() {
@@ -147,5 +139,4 @@ public class MemberServiceImpl implements MemberService {
     	MemberBean m = findById(param.getId());
         flag = (employees.contains(m)) ? employees.remove(m) : customers.remove(m);
     	return flag;
-    }
-}
+    }*/
