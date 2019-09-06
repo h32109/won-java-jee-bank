@@ -11,38 +11,29 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bank.command.Sender;
+import com.bank.command.Command;
+import com.bank.command.MoveCommand;
+import com.bank.command.Order;
+import com.bank.command.Receiver;
 import com.bank.domains.CustomerBean;
 import com.bank.pool.Constants;
 import com.bank.serviceimpls.MemberServiceImpl;
 import com.bank.services.MemberService;
 
-@WebServlet("/member.do")
+@WebServlet("/customer.do")
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-
-    public MemberController() {
-        super();
-    }
-
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("MemberController¿¡ µµÂøÇÔ");
-		System.out.println(request.getParameter("action"));
-		System.out.println(request.getParameter("dest"));
+		
 		MemberService service = new MemberServiceImpl();
-		CustomerBean param =null;
-
-
-		switch(request.getParameter("action")) {
-	
-			
-			case "move" : request.getRequestDispatcher(String.format
-					(Constants.VIEW_PATH,"customer",request.getParameter("dest"))).forward(request, response);
-					System.out.println("MemberController¿¡ µµÂøÇÔ1");
-			
-					break;
-			
+		CustomerBean param =new CustomerBean();
+		Receiver.init(request);
+		Receiver.cmd.execute();
+		if(Receiver.cmd.getAction()==null) {
+			Receiver.cmd.setPage( );
+		}
+		switch(Receiver.cmd.getAction()) {
 			case "join":
 				System.out.println("MemberController¿¡ µµÂøÇÔ2");
 			    String id = request.getParameter("id");
@@ -50,7 +41,7 @@ public class MemberController extends HttpServlet {
 				String name = request.getParameter("name");
 				String ssn = request.getParameter("ssn");
 				String credit = request.getParameter("credit");
-				param = new CustomerBean();
+				
 				param.setId(id);
 				param.setPw(pw);
 				param.setName(name);
@@ -58,26 +49,23 @@ public class MemberController extends HttpServlet {
 				param.setCredit(credit);
 				System.out.println("È¸¿øÁ¤º¸ : "+ param.toString());
 				service.join(param);
-				request.getRequestDispatcher(String.format
-						(Constants.VIEW_PATH,"customer",request.getParameter("dest"))).forward(request, response);
+				//Receiver.cmd.setPage("login");
 					break;
 			 
 			case "login" :
 				System.out.println("MemberController¿¡ µµÂøÇÔ3");
 			     id = request.getParameter("id");
 				pw = request.getParameter("pw"); 
-				param = new CustomerBean();
 				param.setId(id);
 				param.setPw(pw);
-				System.out.println(param.toString());
-				CustomerBean customer = service.login(param);
-				if(param.getId().equals(customer.getId())&&param.getPw().equals(customer.getPw())) {
-					request.setAttribute("customer", customer);
-					request.getRequestDispatcher(String.format
-							(Constants.VIEW_PATH,"customer",request.getParameter("dest"))).forward(request, response);
+				param = service.login(param);
+				request.setAttribute("customer", param);
+				if(param == null) {
+					System.out.println("null");
+						Receiver.cmd.setPage("login");
 				}else {
-					request.getRequestDispatcher(String.format
-							(Constants.VIEW_PATH,"customer",request.getParameter("action"))).forward(request, response);
+					System.out.println("nullÀÌ ¾Æ´Ô");
+					Receiver.cmd.setPage("mypage");
 				}
 					break;
 			 
@@ -86,12 +74,12 @@ public class MemberController extends HttpServlet {
 				break;
 					
 			default:
-
-			
 					break;
 		}
 		
-	 }
+		Sender.forward(request, response);
+		}
+		
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

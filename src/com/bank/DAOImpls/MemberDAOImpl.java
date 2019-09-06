@@ -16,11 +16,16 @@ import com.bank.pool.Constants;
 public class MemberDAOImpl implements MemberDAO{	
 	File file = new File(Constants.FILE_PATH+"customer0905.txt");
 	List<String> list = new ArrayList<>();
+	
 	@Override
 	public void insertCustomer(CustomerBean param) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
-			writer.write(param.toString());
+			writer.write(param.getId()+","+
+					param.getPw()+","+
+					param.getName()+","+
+					param.getSsn()+","+
+					param.getCredit());
 			writer.newLine();
 			writer.flush();
 			writer.close();
@@ -37,20 +42,27 @@ public class MemberDAOImpl implements MemberDAO{
 
 	@Override
 	public CustomerBean login(CustomerBean param) {
+		CustomerBean cus = new CustomerBean();
 		try{
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String user = reader.readLine();
 			reader.close();
 			String[] val = user.split(",");
-			param.setId(val[0]);
-			param.setPw(val[1]);
-			param.setName(val[2]);
-			param.setSsn(val[3]);
-			param.setCredit(val[4]);
+			cus.setId(val[0]);
+			cus.setPw(val[1]);
+			cus.setName(val[2]);
+			cus.setSsn(val[3]);
+			cus.setCredit(val[4]);
+			if(!param.getId().equals(cus.getId())) {
+				System.out.println("null");
+				cus =null;
+			}else {
+				System.out.println("null¾Æ´Ô");
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return param;
+		return cus;
 	}
 
 }

@@ -27,12 +27,8 @@ private MemberDAO dao;
     }
     
     @Override
-    public CustomerBean login(MemberBean param) {
-    	CustomerBean customer = new CustomerBean();
-    	customer.setId(param.getId());
-    	customer.setPw(param.getPw());
-    	CustomerBean target = dao.login(customer);
-        return target;
+    public CustomerBean login(CustomerBean param) {
+        return  dao.login(param);
     }
 }
    /* @Override

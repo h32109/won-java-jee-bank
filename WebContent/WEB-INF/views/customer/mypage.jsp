@@ -12,5 +12,6 @@
 <h3>비밀번호 ${customer.pw}</h3>
 <h3>주민번호 ${customer.ssn}</h3>
 <h3>신용등급 ${customer.credit}</h3>
+<input type="hidden" name="action" value="mypage" />
 </body>
 </html>
