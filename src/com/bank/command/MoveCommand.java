@@ -8,10 +8,10 @@ public class MoveCommand extends Command {
 		setDomain(domain);
 		setAction(request.getParameter("action")==null? "move" :
 			request.getParameter("action"));
-		execute();
 	}
 	
 	public void execute(){
+		setRequest(request);
 		super.execute();
 		request.setAttribute("page", request.getParameter("page"));
 	}

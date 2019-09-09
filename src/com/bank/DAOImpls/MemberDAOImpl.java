@@ -45,19 +45,17 @@ public class MemberDAOImpl implements MemberDAO{
 		CustomerBean cus = new CustomerBean();
 		try{
 			BufferedReader reader = new BufferedReader(new FileReader(file));
-			String user = reader.readLine();
+			String[] val =reader.readLine().split(",");
 			reader.close();
-			String[] val = user.split(",");
-			cus.setId(val[0]);
-			cus.setPw(val[1]);
-			cus.setName(val[2]);
-			cus.setSsn(val[3]);
-			cus.setCredit(val[4]);
-			if(!param.getId().equals(cus.getId())) {
-				System.out.println("null");
-				cus =null;
+			if(val[0].equals(param.getId())&&val[1].equals(param.getPw())) {
+				cus.setId(val[0]);
+				cus.setPw(val[1]);
+				cus.setName(val[2]);
+				cus.setSsn(val[3]);
+				cus.setCredit(val[4]);
 			}else {
-				System.out.println("null¾Æ´Ô");
+				System.out.println("null");
+				cus = null;
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

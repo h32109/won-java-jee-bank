@@ -7,6 +7,7 @@ import com.bank.pool.Constants;
 
 import lombok.Data;
 @Data
+
 public class Command  implements Order  {
 	protected HttpServletRequest request;
 	protected String action,domain, page, view;
@@ -28,4 +29,9 @@ public class Command  implements Order  {
 	public void setPage() {
 		page = request.getParameter("page");
 }
+	
+	public void setView(String domain, String page) {
+		this.view =  String.format(Constants.VIEW_PATH, domain, page);
+		
+	}
 }
